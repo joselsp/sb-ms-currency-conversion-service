@@ -2,6 +2,8 @@ package com.keepcoding.currencyconversionservice.controller;
 
 import java.math.BigDecimal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,8 @@ import com.keepcoding.currencyconversionservice.model.CurrencyConversionBean;
 
 @RestController
 public class CurrencyConversionController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CurrencyConversionController.class);
 	
 	@Autowired
 	CurrencyExchangeServiceProxy currencyExchangeServiceProxy;
@@ -20,6 +24,7 @@ public class CurrencyConversionController {
 	public CurrencyConversionBean convertCurrency(@PathVariable("from") String from, @PathVariable("to") String to, @PathVariable("quantity") BigDecimal quantity) {
 		
 		CurrencyConversionBean result = currencyExchangeServiceProxy.retrieveExchangeValue(from, to);
+		LOGGER.info("from: {} - to: {}",  result.getFrom(), result.getTo());
 		
 		return new CurrencyConversionBean(result.getId(), result.getFrom(), result.getTo(), result.getConversionMultiple(), quantity, quantity.multiply(result.getConversionMultiple()), result.getPort());
 	}
